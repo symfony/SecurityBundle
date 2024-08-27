@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecision;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\UserAuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\LogicException;
@@ -58,10 +59,10 @@ class Security implements AuthorizationCheckerInterface, UserAuthorizationChecke
     /**
      * Checks if the attributes are granted against the current authentication token and optionally supplied subject.
      */
-    public function isGranted(mixed $attributes, mixed $subject = null): bool
+    public function isGranted(mixed $attributes, mixed $subject = null, ?AccessDecision $accessDecision = null): bool
     {
         return $this->container->get('security.authorization_checker')
-            ->isGranted($attributes, $subject);
+            ->isGranted($attributes, $subject, $accessDecision);
     }
 
     public function getToken(): ?TokenInterface
@@ -154,10 +155,10 @@ class Security implements AuthorizationCheckerInterface, UserAuthorizationChecke
      *
      * This should be used over isGranted() when checking permissions against a user that is not currently logged in or while in a CLI context.
      */
-    public function isGrantedForUser(UserInterface $user, mixed $attribute, mixed $subject = null): bool
+    public function isGrantedForUser(UserInterface $user, mixed $attribute, mixed $subject = null, ?AccessDecision $accessDecision = null): bool
     {
         return $this->container->get('security.user_authorization_checker')
-            ->isGrantedForUser($user, $attribute, $subject);
+            ->isGrantedForUser($user, $attribute, $subject, $accessDecision);
     }
 
     private function getAuthenticator(?string $authenticatorName, string $firewallName): AuthenticatorInterface
