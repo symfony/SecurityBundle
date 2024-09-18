@@ -58,6 +58,7 @@ use Symfony\Component\Security\Core\User\ChainUserChecker;
 use Symfony\Component\Security\Core\User\ChainUserProvider;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authentication\ExposeSecurityLevel;
 use Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Debug\TraceableAuthenticatorManagerListener;
 use Symfony\Component\Security\Http\Event\CheckPassportEvent;
@@ -154,7 +155,8 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
                 ));
         }
 
-        $container->setParameter('security.authentication.hide_user_not_found', $config['hide_user_not_found']);
+        $container->setParameter('security.authentication.hide_user_not_found', ExposeSecurityLevel::All !== $config['expose_security_errors']);
+        $container->setParameter('.security.authentication.expose_security_errors', $config['expose_security_errors']);
 
         if (class_exists(Application::class)) {
             $loader->load('debug_console.php');

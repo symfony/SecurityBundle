@@ -6,6 +6,8 @@ CHANGELOG
 
  * Add `Security::isGrantedForUser()` to test user authorization without relying on the session. For example, users not currently logged in, or while processing a message from a message queue
  * Add encryption support to `OidcTokenHandler` (JWE)
+ * Add `expose_security_errors` config option to display `AccountStatusException`
+ * Deprecate the `security.hide_user_not_found` config option in favor of `security.expose_security_errors`
 
 7.2
 ---

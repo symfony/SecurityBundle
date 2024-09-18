@@ -55,6 +55,7 @@
         <xsd:attribute name="strategy" type="access_decision_manager_strategy" />
         <xsd:attribute name="service" type="xsd:string" />
         <xsd:attribute name="strategy-service" type="xsd:string" />
+        <xsd:attribute name="expose-security-errors" type="access_decision_manager_expose_security_level" />
         <xsd:attribute name="allow-if-all-abstain" type="xsd:boolean" />
         <xsd:attribute name="allow-if-equal-granted-denied" type="xsd:boolean" />
     </xsd:complexType>
@@ -65,6 +66,14 @@
             <xsd:enumeration value="consensus" />
             <xsd:enumeration value="unanimous" />
             <xsd:enumeration value="priority" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="access_decision_manager_expose_security_level">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="none" />
+            <xsd:enumeration value="account_status" />
+            <xsd:enumeration value="all" />
         </xsd:restriction>
     </xsd:simpleType>
 
