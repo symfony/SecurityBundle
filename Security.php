@@ -13,9 +13,7 @@ namespace Symfony\Bundle\SecurityBundle;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
-use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -23,17 +21,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\UserAuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\LogicException;
 use Symfony\Component\Security\Core\Exception\LogoutException;
-use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\BadgeInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
-use Symfony\Component\Security\Http\FirewallMapInterface;
 use Symfony\Component\Security\Http\ParameterBagUtils;
 use Symfony\Contracts\Service\ServiceProviderInterface;
-use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /**
  * Helper class for commonly-needed security tasks.
@@ -44,7 +38,7 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
  *
  * @final
  */
-class Security implements AuthorizationCheckerInterface, ServiceSubscriberInterface, UserAuthorizationCheckerInterface
+class Security implements AuthorizationCheckerInterface, UserAuthorizationCheckerInterface
 {
     public function __construct(
         private readonly ContainerInterface $container,
@@ -199,20 +193,5 @@ class Security implements AuthorizationCheckerInterface, ServiceSubscriberInterf
         }
 
         return $firewallAuthenticatorLocator->get($authenticatorId);
-    }
-
-    public static function getSubscribedServices(): array
-    {
-        return [
-            'security.token_storage' => TokenStorageInterface::class,
-            'security.authorization_checker' => AuthorizationCheckerInterface::class,
-            'security.user_authorization_checker' => UserAuthorizationCheckerInterface::class,
-            'security.authenticator.managers_locator' => '?'.ServiceProviderInterface::class,
-            'request_stack' => RequestStack::class,
-            'security.firewall.map' => FirewallMapInterface::class,
-            'security.user_checker' => UserCheckerInterface::class,
-            'security.firewall.event_dispatcher_locator' => ServiceLocator::class,
-            'security.csrf.token_manager' => '?'.CsrfTokenManagerInterface::class,
-        ];
     }
 }
