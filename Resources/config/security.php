@@ -34,6 +34,7 @@ use Symfony\Component\Security\Core\Authorization\ExpressionLanguage;
 use Symfony\Component\Security\Core\Authorization\UserAuthorizationChecker;
 use Symfony\Component\Security\Core\Authorization\UserAuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
+use Symfony\Component\Security\Core\Authorization\Voter\ClosureVoter;
 use Symfony\Component\Security\Core\Authorization\Voter\ExpressionVoter;
 use Symfony\Component\Security\Core\Authorization\Voter\RoleHierarchyVoter;
 use Symfony\Component\Security\Core\Authorization\Voter\RoleVoter;
@@ -168,6 +169,13 @@ return static function (ContainerConfigurator $container) {
                 service('security.authentication.trust_resolver'),
                 service('security.authorization_checker'),
                 service('security.role_hierarchy')->nullOnInvalid(),
+            ])
+            ->tag('security.voter', ['priority' => 245])
+
+        ->set('security.access.closure_voter', ClosureVoter::class)
+            ->args([
+                service('security.access.decision_manager'),
+                service('security.authentication.trust_resolver'),
             ])
             ->tag('security.voter', ['priority' => 245])
 
