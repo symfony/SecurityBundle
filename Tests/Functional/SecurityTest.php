@@ -61,8 +61,8 @@ class SecurityTest extends AbstractWebTestCase
         $security = $container->get('functional_test.security.helper');
         $this->assertTrue($security->isGranted('ROLE_FOO'));
         $this->assertFalse($security->isGranted('ROLE_BAR'));
-        $this->assertTrue($security->userIsGranted($offlineUser, 'ROLE_BAR'));
-        $this->assertFalse($security->userIsGranted($offlineUser, 'ROLE_FOO'));
+        $this->assertTrue($security->isGrantedForUser($offlineUser, 'ROLE_BAR'));
+        $this->assertFalse($security->isGrantedForUser($offlineUser, 'ROLE_FOO'));
     }
 
     /**
