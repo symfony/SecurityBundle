@@ -20,7 +20,9 @@ use Symfony\Bundle\SecurityBundle\Tests\DependencyInjection\Fixtures\UserProvide
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
+use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveReferencesToAliasesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -898,6 +900,30 @@ class SecurityExtensionTest extends TestCase
             'instance' => new Reference('App\Security\CustomHasher'),
             'migrate_from' => ['legacy'],
         ]);
+    }
+
+    public function testAuthenticatorsDecoration()
+    {
+        $container = $this->getRawContainer();
+        $container->setParameter('kernel.debug', true);
+        $container->getCompilerPassConfig()->setOptimizationPasses([
+            new ResolveChildDefinitionsPass(),
+            new DecoratorServicePass(),
+            new ResolveReferencesToAliasesPass(),
+        ]);
+
+        $container->register(TestAuthenticator::class);
+        $container->loadFromExtension('security', [
+            'firewalls' => ['main' => ['custom_authenticator' => TestAuthenticator::class]],
+        ]);
+        $container->compile();
+
+        /** @var Reference[] $managerAuthenticators */
+        $managerAuthenticators = $container->getDefinition('security.authenticator.manager.main')->getArgument(0);
+        $this->assertCount(1, $managerAuthenticators);
+        $this->assertSame('debug.'.TestAuthenticator::class, (string) reset($managerAuthenticators), 'AuthenticatorManager must be injected traceable authenticators in debug mode.');
+
+        $this->assertTrue($container->hasDefinition(TestAuthenticator::class), 'Original authenticator must still exist in the container so it can be used outside of the AuthenticatorManager’s context.');
     }
 
     protected function getRawContainer()
