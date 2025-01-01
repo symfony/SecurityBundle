@@ -313,8 +313,8 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
                 $authenticators[$name] = null;
             } else {
                 $firewallAuthenticatorRefs = [];
-                foreach ($firewallAuthenticators as $authenticatorId) {
-                    $firewallAuthenticatorRefs[$authenticatorId] = new Reference($authenticatorId);
+                foreach ($firewallAuthenticators as $originalAuthenticatorId => $managerAuthenticatorId) {
+                    $firewallAuthenticatorRefs[$originalAuthenticatorId] = new Reference($originalAuthenticatorId);
                 }
                 $authenticators[$name] = ServiceLocatorTagPass::register($container, $firewallAuthenticatorRefs);
             }
@@ -501,7 +501,7 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
         $configuredEntryPoint = $defaultEntryPoint;
 
         // authenticator manager
-        $authenticators = array_map(fn ($id) => new Reference($id), $firewallAuthenticationProviders);
+        $authenticators = array_map(fn ($id) => new Reference($id), $firewallAuthenticationProviders, []);
         $container
             ->setDefinition($managerId = 'security.authenticator.manager.'.$id, new ChildDefinition('security.authenticator.manager'))
             ->replaceArgument(0, $authenticators)
@@ -625,11 +625,11 @@ class SecurityExtension extends Extension implements PrependExtensionInterface
                 $authenticators = $factory->createAuthenticator($container, $id, $firewall[$key], $userProvider);
                 if (\is_array($authenticators)) {
                     foreach ($authenticators as $authenticator) {
-                        $authenticationProviders[] = $authenticator;
+                        $authenticationProviders[$authenticator] = $authenticator;
                         $entryPoints[] = $authenticator;
                     }
                 } else {
-                    $authenticationProviders[] = $authenticators;
+                    $authenticationProviders[$authenticators] = $authenticators;
                     $entryPoints[$key] = $authenticators;
                 }
 
