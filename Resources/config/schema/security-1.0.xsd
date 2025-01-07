@@ -137,7 +137,6 @@
             <xsd:element name="anonymous" type="anonymous" minOccurs="0" maxOccurs="1" />
             <xsd:element name="form-login" type="form_login" minOccurs="0" maxOccurs="1" />
             <xsd:element name="form-login-ldap" type="form_login_ldap" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="guard" type="guard" minOccurs="0" maxOccurs="1" />
             <xsd:element name="access-token" type="access_token" minOccurs="0" maxOccurs="1" />
             <xsd:element name="http-basic" type="http_basic" minOccurs="0" maxOccurs="1" />
             <xsd:element name="http-basic-ldap" type="http_basic_ldap" minOccurs="0" maxOccurs="1" />
@@ -252,14 +251,6 @@
                 <xsd:attributeGroup ref="ldap-factory" />
             </xsd:extension>
         </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="guard">
-        <xsd:sequence>
-            <xsd:element name="authenticator" type="xsd:string" minOccurs="1" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attribute name="provider" type="xsd:string" />
-        <xsd:attribute name="entry-point" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="http_basic">
