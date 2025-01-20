@@ -425,7 +425,7 @@ class AccessTokenTest extends AbstractWebTestCase
         $this->assertSame(['message' => 'Welcome @dunglas!'], json_decode($response->getContent(), true));
     }
 
-    public function validAccessTokens(): array
+    public static function validAccessTokens(): array
     {
         if (!\extension_loaded('openssl')) {
             return [];
@@ -440,8 +440,8 @@ class AccessTokenTest extends AbstractWebTestCase
             'sub' => 'e21bf182-1538-406e-8ccb-e25a17aba39f',
             'username' => 'dunglas',
         ];
-        $jws = $this->createJws($claims);
-        $jwe = $this->createJwe($jws);
+        $jws = self::createJws($claims);
+        $jwe = self::createJwe($jws);
 
         return [
             [$jws],
