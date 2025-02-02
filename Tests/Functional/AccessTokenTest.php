@@ -509,7 +509,7 @@ class AccessTokenTest extends AbstractWebTestCase
         return (new JweCompactSerializer())->serialize(
             (new JWEBuilder(new AlgorithmManager([
                 new ECDHES(), new A128GCM(),
-            ])))->create()
+            ]), null))->create()
                 ->withPayload($input)
                 ->withSharedProtectedHeader(['alg' => 'ECDH-ES', 'enc' => 'A128GCM', ...$header])
                 // tip: use https://mkjwk.org/ to generate a JWK
