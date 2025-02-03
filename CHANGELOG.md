@@ -8,7 +8,6 @@ CHANGELOG
  * Add encryption support to `OidcTokenHandler` (JWE)
  * Add `expose_security_errors` config option to display `AccountStatusException`
  * Deprecate the `security.hide_user_not_found` config option in favor of `security.expose_security_errors`
- * Deprecate the `erase_credentials` config option, erase credentials on your own e.g. upon `AuthenticationTokenCreatedEvent` instead
 
 7.2
 ---
