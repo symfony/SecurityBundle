@@ -65,6 +65,17 @@ class Security implements AuthorizationCheckerInterface, UserAuthorizationChecke
             ->isGranted($attributes, $subject, $accessDecision);
     }
 
+    /**
+     * Checks if the attribute is granted against the user and optionally supplied subject.
+     *
+     * This should be used over isGranted() when checking permissions against a user that is not currently logged in or while in a CLI context.
+     */
+    public function isGrantedForUser(UserInterface $user, mixed $attribute, mixed $subject = null, ?AccessDecision $accessDecision = null): bool
+    {
+        return $this->container->get('security.user_authorization_checker')
+            ->isGrantedForUser($user, $attribute, $subject, $accessDecision);
+    }
+
     public function getToken(): ?TokenInterface
     {
         return $this->container->get('security.token_storage')->getToken();
@@ -148,17 +159,6 @@ class Security implements AuthorizationCheckerInterface, UserAuthorizationChecke
         $tokenStorage->setToken(null);
 
         return $logoutEvent->getResponse();
-    }
-
-    /**
-     * Checks if the attribute is granted against the user and optionally supplied subject.
-     *
-     * This should be used over isGranted() when checking permissions against a user that is not currently logged in or while in a CLI context.
-     */
-    public function isGrantedForUser(UserInterface $user, mixed $attribute, mixed $subject = null, ?AccessDecision $accessDecision = null): bool
-    {
-        return $this->container->get('security.user_authorization_checker')
-            ->isGrantedForUser($user, $attribute, $subject, $accessDecision);
     }
 
     private function getAuthenticator(?string $authenticatorName, string $firewallName): AuthenticatorInterface
